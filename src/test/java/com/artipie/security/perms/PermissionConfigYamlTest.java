@@ -5,6 +5,7 @@
 package com.artipie.security.perms;
 
 import com.amihaiemil.eoyaml.Yaml;
+import com.amihaiemil.eoyaml.YamlMapping;
 import java.io.IOException;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -91,6 +92,29 @@ public class PermissionConfigYamlTest {
                 ).readYamlMapping()
             ).value("key"),
             new IsEqual<>("value")
+        );
+    }
+
+    @Test
+    void returnsOriginalForm() throws IOException {
+        final YamlMapping yaml = Yaml.createYamlInput(
+            String.join(
+                "\n",
+                "docker-repo:",
+                "  repository:",
+                "    my-alpine:",
+                "      - pull",
+                "    ubuntu-slim:",
+                "      - pull",
+                "      - push",
+                "  registry:",
+                "    base:",
+                "      - \"*\""
+            )
+        ).readYamlMapping();
+        MatcherAssert.assertThat(
+            new PermissionConfig.Yaml(yaml).original(),
+            new IsEqual<>(yaml)
         );
     }
 }

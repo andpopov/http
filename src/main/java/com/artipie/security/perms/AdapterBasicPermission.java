@@ -90,7 +90,7 @@ public final class AdapterBasicPermission extends Permission {
      *
      * @param config Permission configuration
      */
-    public AdapterBasicPermission(final PermissionConfig config) {
+    public AdapterBasicPermission(final PermissionConfig<?> config) {
         this(config.name(), config.sequence(config.name()));
     }
 

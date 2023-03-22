@@ -9,6 +9,8 @@ import com.artipie.security.perms.PermissionConfig;
 import com.artipie.security.perms.PermissionFactory;
 import java.security.AllPermission;
 import java.security.Permission;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Test permission.
@@ -17,7 +19,7 @@ import java.security.Permission;
 @ArtipiePermissionFactory("docker-perm")
 public final class DuplicatedDockerPermsFactory implements PermissionFactory {
     @Override
-    public Permission newPermission(final PermissionConfig config) {
-        return new AllPermission();
+    public Collection<Permission> newPermission(final PermissionConfig<?> config) {
+        return Collections.singleton(new AllPermission());
     }
 }

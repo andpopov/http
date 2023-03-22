@@ -5,6 +5,8 @@
 package com.artipie.security.perms;
 
 import java.security.Permission;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Factory for {@link AdapterBasicPermission}.
@@ -14,8 +16,8 @@ import java.security.Permission;
 public final class AdapterBasicPermissionFactory implements PermissionFactory {
 
     @Override
-    public Permission newPermission(final PermissionConfig config) {
-        return new AdapterBasicPermission(config);
+    public Collection<Permission> newPermission(final PermissionConfig<?> config) {
+        return Collections.singleton(new AdapterBasicPermission(config));
     }
 
 }

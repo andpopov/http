@@ -5,6 +5,7 @@
 package com.artipie.security.perms;
 
 import java.security.Permission;
+import java.util.Collection;
 
 /**
  * Permission factory to create permission instance.
@@ -17,5 +18,5 @@ public interface PermissionFactory {
      * @param config Configuration
      * @return Config
      */
-    Permission newPermission(PermissionConfig config);
+    Collection<Permission> newPermission(PermissionConfig<?> config);
 }

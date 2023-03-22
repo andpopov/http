@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
 
 /**
  * Permission configuration.
+ * @param <T> Configuration original format type: yaml, json, database table, string etc.
  * @since 1.2
  */
-public interface PermissionConfig {
+public interface PermissionConfig<T> {
 
     /**
      * Permission name. The name can vary from the permission model,
@@ -39,13 +40,20 @@ public interface PermissionConfig {
     Set<String> sequence(String key);
 
     /**
+     * Get config in its original form: it can be yaml, json, string or
+     * any other representation from what config is parsed.
+     * @return Original form
+     */
+    T original();
+
+    /**
      * Yaml permission config.
      * Implementation note:
      * Yaml permission config allows {@link AdapterBasicPermission#WILDCARD} yaml sequence.In
      * yamls `*` sign can be quoted. Thus, we need to handle various quotes properly.
      * @since 1.2
      */
-    final class Yaml implements PermissionConfig {
+    final class Yaml implements PermissionConfig<YamlMapping> {
 
         /**
          * Yaml mapping to read permission from.
@@ -89,6 +97,11 @@ public interface PermissionConfig {
                 ).collect(Collectors.toSet());
             }
             return res;
+        }
+
+        @Override
+        public YamlMapping original() {
+            return this.yaml;
         }
 
         /**
