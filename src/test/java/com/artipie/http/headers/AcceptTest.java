@@ -1,5 +1,5 @@
 /*
- * The MIT License (MIT) Copyright (c) 2020-2022 artipie.com
+ * The MIT License (MIT) Copyright (c) 2020-2023 artipie.com
  * https://github.com/artipie/http/blob/master/LICENSE.txt
  */
 package com.artipie.http.headers;
@@ -75,6 +75,16 @@ class AcceptTest {
                 "application/vnd.docker.distribution.manifest.v2+json",
                 "application/vnd.oci.image.manifest.v1+json"
             )
+        );
+    }
+
+    @Test
+    void returnEmptyValuesIfNoAcceptHeader() {
+        MatcherAssert.assertThat(
+            new Accept(
+                Headers.EMPTY
+            ).values(),
+            Matchers.hasSize(0)
         );
     }
 }
