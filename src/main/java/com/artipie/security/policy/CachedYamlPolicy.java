@@ -266,11 +266,13 @@ public final class CachedYamlPolicy implements Policy<UserPermissions>, Cleanabl
                 .collect(Collectors.toSet())) {
                 final YamlMapping perms = all.yamlMapping(type);
                 if (perms == null || perms.keys().isEmpty()) {
-                    FACTORIES.newObject(type, CachedYamlPolicy.EMPTY_CONFIG)
-                        .elementsAsStream().forEach(res::add);
+                    Collections.list(
+                        FACTORIES.newObject(type, CachedYamlPolicy.EMPTY_CONFIG).elements()
+                    ).forEach(res::add);
                 } else {
-                    FACTORIES.newObject(type, new PermissionConfig.Yaml(perms))
-                        .elementsAsStream().forEach(res::add);
+                    Collections.list(
+                        FACTORIES.newObject(type, new PermissionConfig.Yaml(perms)).elements()
+                    ).forEach(res::add);
                 }
             }
         }
