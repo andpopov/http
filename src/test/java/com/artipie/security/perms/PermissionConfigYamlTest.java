@@ -45,22 +45,6 @@ import org.junit.jupiter.api.Test;
 public class PermissionConfigYamlTest {
 
     @Test
-    void readsName() throws IOException {
-        MatcherAssert.assertThat(
-            new PermissionConfig.Yaml(
-                Yaml.createYamlInput(
-                    String.join(
-                        "\n",
-                        "maven-repo:",
-                        "  - read"
-                    )
-                ).readYamlMapping()
-            ).name(),
-            new IsEqual<>("maven-repo")
-        );
-    }
-
-    @Test
     void readsSequence() throws IOException {
         MatcherAssert.assertThat(
             new PermissionConfig.Yaml(
@@ -79,7 +63,7 @@ public class PermissionConfigYamlTest {
     }
 
     @Test
-    void readValueByKey() throws IOException {
+    void readSubConfigAndValueByKey() throws IOException {
         MatcherAssert.assertThat(
             new PermissionConfig.Yaml(
                 Yaml.createYamlInput(
@@ -90,31 +74,36 @@ public class PermissionConfigYamlTest {
                         "  key1: value2"
                     )
                 ).readYamlMapping()
-            ).value("key"),
+            ).config("some-repo").string("key"),
             new IsEqual<>("value")
         );
     }
 
     @Test
-    void returnsOriginalForm() throws IOException {
+    void returnsKeys() throws IOException {
         final YamlMapping yaml = Yaml.createYamlInput(
             String.join(
                 "\n",
                 "docker-repo:",
-                "  repository:",
-                "    my-alpine:",
-                "      - pull",
-                "    ubuntu-slim:",
-                "      - pull",
-                "      - push",
-                "  registry:",
-                "    base:",
-                "      - \"*\""
+                "  my-alpine:",
+                "    - pull",
+                "  ubuntu-slim:",
+                "    - pull",
+                "    - push",
+                "docker-local:",
+                "  my-alpine:",
+                "    - pull",
+                "  ubuntu-slim:",
+                "    - pull",
+                "    - push",
+                "docker-vasy:",
+                "  vasy-img:",
+                "    - pull"
             )
         ).readYamlMapping();
         MatcherAssert.assertThat(
-            new PermissionConfig.Yaml(yaml).original(),
-            new IsEqual<>(yaml)
+            new PermissionConfig.Yaml(yaml).keys(),
+            Matchers.contains("docker-repo", "docker-local", "docker-vasy")
         );
     }
 }

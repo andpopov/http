@@ -96,7 +96,7 @@ public final class CachedYamlPolicy implements Policy<UserPermissions>, Cleanabl
     /**
      * Empty permissions' config.
      */
-    private static final PermissionConfig<YamlMapping> EMPTY_CONFIG =
+    private static final PermissionConfig EMPTY_CONFIG =
         new PermissionConfig.Yaml(Yaml.createYamlMappingBuilder().build());
 
     /**
@@ -266,19 +266,11 @@ public final class CachedYamlPolicy implements Policy<UserPermissions>, Cleanabl
                 .collect(Collectors.toSet())) {
                 final YamlMapping perms = all.yamlMapping(type);
                 if (perms == null || perms.keys().isEmpty()) {
-                    FACTORIES.newObject(type, CachedYamlPolicy.EMPTY_CONFIG).forEach(res::add);
+                    FACTORIES.newObject(type, CachedYamlPolicy.EMPTY_CONFIG)
+                        .elementsAsStream().forEach(res::add);
                 } else {
-                    perms.keys().stream().map(key -> key.asScalar().value()).forEach(
-                        key ->
-                            FACTORIES.newObject(
-                                type,
-                                new PermissionConfig.Yaml(
-                                    Yaml.createYamlMappingBuilder().add(
-                                        key, perms.asMapping().yamlSequence(key)
-                                    ).build()
-                                )
-                            ).forEach(res::add)
-                    );
+                    FACTORIES.newObject(type, new PermissionConfig.Yaml(perms))
+                        .elementsAsStream().forEach(res::add);
                 }
             }
         }

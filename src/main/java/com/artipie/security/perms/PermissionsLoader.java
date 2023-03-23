@@ -6,9 +6,8 @@ package com.artipie.security.perms;
 
 import com.artipie.ArtipieException;
 import com.artipie.asto.factory.FactoryLoader;
-import java.security.Permission;
+import java.security.PermissionCollection;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -16,8 +15,8 @@ import java.util.Map;
  * @since 1.2
  */
 public final class PermissionsLoader extends
-    FactoryLoader<PermissionFactory, ArtipiePermissionFactory, PermissionConfig<?>,
-        Collection<Permission>> {
+    FactoryLoader<PermissionFactory<PermissionCollection>, ArtipiePermissionFactory,
+        PermissionConfig, PermissionCollection> {
 
     /**
      * Environment parameter to define packages to find permission factories.
@@ -51,12 +50,12 @@ public final class PermissionsLoader extends
     }
 
     @Override
-    public Collection<Permission> newObject(final String type, final PermissionConfig<?> config) {
-        final PermissionFactory factory = this.factories.get(type);
+    public PermissionCollection newObject(final String type, final PermissionConfig config) {
+        final PermissionFactory<?> factory = this.factories.get(type);
         if (factory == null) {
             throw new ArtipieException(String.format("Permission type %s is not found", type));
         }
-        return factory.newPermission(config);
+        return factory.newPermissions(config);
     }
 
     @Override
