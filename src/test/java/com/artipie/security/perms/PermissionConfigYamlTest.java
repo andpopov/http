@@ -53,12 +53,12 @@ public class PermissionConfigYamlTest {
                         "\n",
                         "some-repo:",
                         "  - read",
-                        "  - write",
+                        "  - \"*\"",
                         "  - delete"
                     )
                 ).readYamlMapping()
             ).sequence("some-repo"),
-            Matchers.contains("read", "write", "delete")
+            Matchers.contains("read", "*", "delete")
         );
     }
 
