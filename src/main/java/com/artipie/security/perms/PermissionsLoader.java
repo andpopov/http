@@ -9,6 +9,9 @@ import com.artipie.asto.factory.FactoryLoader;
 import java.security.PermissionCollection;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Load from the packages via reflection and instantiate permission factories object.
@@ -40,8 +43,8 @@ public final class PermissionsLoader extends
     }
 
     @Override
-    public String defPackage() {
-        return "com.artipie.security";
+    public Set<String> defPackages() {
+        return Stream.of("com.artipie.security", "com.artipie.docker").collect(Collectors.toSet());
     }
 
     @Override

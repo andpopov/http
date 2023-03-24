@@ -8,7 +8,9 @@ import com.artipie.ArtipieException;
 import com.artipie.asto.factory.Config;
 import com.artipie.asto.factory.FactoryLoader;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Load via reflection and create existing instances of {@link PolicyFactory} implementations.
@@ -39,8 +41,8 @@ public final class PoliciesLoader extends
     }
 
     @Override
-    public String defPackage() {
-        return "com.artipie.security";
+    public Set<String> defPackages() {
+        return Collections.singleton("com.artipie.security");
     }
 
     @Override
