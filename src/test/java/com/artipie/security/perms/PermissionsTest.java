@@ -29,7 +29,7 @@ class PermissionsTest {
                         .add("my-repo", Yaml.createYamlSequenceBuilder().add("read").build())
                         .build()
                 )
-            ),
+            ).elements().nextElement(),
             new IsInstanceOf(AdapterBasicPermission.class)
         );
     }
@@ -40,7 +40,7 @@ class PermissionsTest {
             new PermissionsLoader().newObject(
                 "adapter_all_permission",
                 new PermissionConfig.Yaml(Yaml.createYamlMappingBuilder().build())
-            ),
+            ).elements().nextElement(),
             new IsInstanceOf(AllPermission.class)
         );
     }
@@ -80,7 +80,7 @@ class PermissionsTest {
             permissions.newObject(
                 "maven-perm",
                 new PermissionConfig.Yaml(Yaml.createYamlMappingBuilder().build())
-            ),
+            ).elements().nextElement(),
             new IsInstanceOf(AllPermission.class)
         );
         MatcherAssert.assertThat(
@@ -88,7 +88,7 @@ class PermissionsTest {
             permissions.newObject(
                 "docker-perm",
                 new PermissionConfig.Yaml(Yaml.createYamlMappingBuilder().build())
-            ),
+            ).elements().nextElement(),
             new IsInstanceOf(AllPermission.class)
         );
     }

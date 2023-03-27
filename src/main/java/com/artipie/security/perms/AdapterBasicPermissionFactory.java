@@ -4,18 +4,24 @@
  */
 package com.artipie.security.perms;
 
-import java.security.Permission;
-
 /**
  * Factory for {@link AdapterBasicPermission}.
  * @since 1.2
  */
 @ArtipiePermissionFactory("adapter_basic_permission")
-public final class AdapterBasicPermissionFactory implements PermissionFactory {
+public final class AdapterBasicPermissionFactory implements
+    PermissionFactory<AdapterBasicPermission.AdapterBasicPermissionCollection> {
 
     @Override
-    public Permission newPermission(final PermissionConfig config) {
-        return new AdapterBasicPermission(config);
+    public AdapterBasicPermission.AdapterBasicPermissionCollection newPermissions(
+        final PermissionConfig config
+    ) {
+        final AdapterBasicPermission.AdapterBasicPermissionCollection res =
+            new AdapterBasicPermission.AdapterBasicPermissionCollection();
+        for (final String name : config.keys()) {
+            res.add(new AdapterBasicPermission(name, config.sequence(name)));
+        }
+        return res;
     }
 
 }

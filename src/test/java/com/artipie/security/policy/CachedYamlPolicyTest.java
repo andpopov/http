@@ -365,13 +365,13 @@ class CachedYamlPolicyTest {
             "\n",
             "permissions:",
             "  adapter_basic_permission:",
-            "    maven-repo:",
-            "      - read",
-            "      - write",
             "    python-repo:",
             "      - read",
             "    npm-repo:",
-            "      - read"
+            "      - read",
+            "    maven-repo:",
+            "      - read",
+            "      - write"
         ).getBytes(StandardCharsets.UTF_8);
     }
 

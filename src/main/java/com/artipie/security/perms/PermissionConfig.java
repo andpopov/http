@@ -4,8 +4,10 @@
  */
 package com.artipie.security.perms;
 
+import com.amihaiemil.eoyaml.Scalar;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
+import com.artipie.asto.factory.Config;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -13,30 +15,14 @@ import java.util.stream.Collectors;
  * Permission configuration.
  * @since 1.2
  */
-public interface PermissionConfig {
+public interface PermissionConfig extends Config {
 
     /**
-     * Permission name. The name can vary from the permission model,
-     * in {@link AdapterBasicPermission} the name is the name of the repository.
-     * @return Permission name
-     */
-    String name();
-
-    /**
-     * Gets string value.
+     * Gets sequence of keys.
      *
-     * @param key Key.
-     * @return Value.
+     * @return Keys sequence.
      */
-    String value(String key);
-
-    /**
-     * Gets sequence of values.
-     *
-     * @param key Key.
-     * @return Sequence.
-     */
-    Set<String> sequence(String key);
+    Set<String> keys();
 
     /**
      * Yaml permission config.
@@ -61,34 +47,54 @@ public interface PermissionConfig {
         }
 
         @Override
-        public String name() {
-            return Yaml.cleanName(this.yaml.keys().iterator().next().asScalar().value());
-        }
-
-        @Override
-        public String value(final String key) {
-            return this.yaml.yamlMapping(this.name()).string(key);
+        public String string(final String key) {
+            return this.yaml.string(key);
         }
 
         @Override
         public Set<String> sequence(final String key) {
             final Set<String> res;
             if (AdapterBasicPermission.WILDCARD.equals(key)) {
-                res = this.yaml.yamlSequence(
-                    this.yaml.keys().stream().map(YamlNode::asScalar).filter(
-                        item -> item.value().contains(AdapterBasicPermission.WILDCARD)
-                    ).findFirst().orElseThrow(
-                        () -> new IllegalStateException(String.format("Sequence %s not found", key))
-                    )
-                ).values().stream().map(
-                    item -> item.asScalar().value()
-                ).collect(Collectors.toSet());
+                res = this.yaml.yamlSequence(this.getWildcardKey(key)).values().stream()
+                    .map(item -> item.asScalar().value()).collect(Collectors.toSet());
             } else {
                 res = this.yaml.yamlSequence(key).values().stream().map(
                     item -> item.asScalar().value()
                 ).collect(Collectors.toSet());
             }
             return res;
+        }
+
+        @Override
+        public Set<String> keys() {
+            return this.yaml.keys().stream().map(node -> node.asScalar().value())
+                .map(Yaml::cleanName).collect(Collectors.toSet());
+        }
+
+        @Override
+        public PermissionConfig config(final String key) {
+            final PermissionConfig res;
+            if (AdapterBasicPermission.WILDCARD.equals(key)) {
+                res = new Yaml(this.yaml.yamlMapping(this.getWildcardKey(key)));
+            } else {
+                res = new Yaml(this.yaml.yamlMapping(key));
+            }
+            return res;
+        }
+
+        /**
+         * Find wildcard key as it can be escaped in various ways.
+         * @param key The key
+         * @return Escaped key to get sequence or mapping with it
+         */
+        private Scalar getWildcardKey(final String key) {
+            return this.yaml.keys().stream().map(YamlNode::asScalar).filter(
+                item -> item.value().contains(AdapterBasicPermission.WILDCARD)
+            ).findFirst().orElseThrow(
+                () -> new IllegalStateException(
+                    String.format("Sequence %s not found", key)
+                )
+            );
         }
 
         /**

@@ -8,16 +8,16 @@ import com.artipie.security.perms.ArtipiePermissionFactory;
 import com.artipie.security.perms.PermissionConfig;
 import com.artipie.security.perms.PermissionFactory;
 import java.security.AllPermission;
-import java.security.Permission;
+import java.security.PermissionCollection;
 
 /**
  * Test permission.
  * @since 1.2
  */
 @ArtipiePermissionFactory("docker-perm")
-public final class DuplicatedDockerPermsFactory implements PermissionFactory {
+public final class DuplicatedDockerPermsFactory implements PermissionFactory<PermissionCollection> {
     @Override
-    public Permission newPermission(final PermissionConfig config) {
-        return new AllPermission();
+    public PermissionCollection newPermissions(final PermissionConfig config) {
+        return new AllPermission().newPermissionCollection();
     }
 }

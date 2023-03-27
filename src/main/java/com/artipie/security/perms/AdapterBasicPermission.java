@@ -6,10 +6,10 @@ package com.artipie.security.perms;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -81,17 +81,8 @@ public final class AdapterBasicPermission extends Permission {
      * @param repo Repository name
      * @param strings Actions set
      */
-    public AdapterBasicPermission(final String repo, final Set<String> strings) {
+    public AdapterBasicPermission(final String repo, final Collection<String> strings) {
         this(repo, AdapterBasicPermission.maskFromActions(strings));
-    }
-
-    /**
-     * Constructs a permission from configuration.
-     *
-     * @param config Permission configuration
-     */
-    public AdapterBasicPermission(final PermissionConfig config) {
-        this(config.name(), config.sequence(config.name()));
     }
 
     @Override
@@ -169,7 +160,7 @@ public final class AdapterBasicPermission extends Permission {
      * @param actions The set of actions
      * @return Integer mask
      */
-    private static int maskFromActions(final Set<String> actions) {
+    private static int maskFromActions(final Collection<String> actions) {
         int res = Action.NONE.mask();
         if (actions.isEmpty() || actions.size() == 1 && actions.contains("")) {
             res = Action.NONE.mask();
