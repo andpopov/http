@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
  * Roles yaml file name is the name of the role, format example for `java-dev.yaml`:
  * <pre>{@code
  * permissions:
- *   adapter_basic_permission:
+ *   adapter_basic_permissions:
  *     maven-repo:
  *       - read
  *       - write

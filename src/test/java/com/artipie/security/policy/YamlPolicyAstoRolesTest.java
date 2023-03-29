@@ -74,7 +74,7 @@ class YamlPolicyAstoRolesTest {
         return String.join(
             "\n",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    maven-repo:",
             "      - read",
             "      - write",
@@ -98,7 +98,7 @@ class YamlPolicyAstoRolesTest {
             "\n",
             "enabled: false",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    maven-repo:",
             "      - read",
             "      - write",
