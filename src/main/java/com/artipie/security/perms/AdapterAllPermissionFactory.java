@@ -16,7 +16,10 @@ public final class AdapterAllPermissionFactory implements PermissionFactory<Perm
 
     @Override
     public PermissionCollection newPermissions(final PermissionConfig config) {
-        return new AllPermission().newPermissionCollection();
+        final AllPermission all = new AllPermission();
+        final PermissionCollection collection = all.newPermissionCollection();
+        collection.add(all);
+        return collection;
     }
 
 }

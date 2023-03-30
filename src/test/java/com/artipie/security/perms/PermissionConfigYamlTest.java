@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Test;
  *   # permissions for some role
  *
  *   java-devs:
- *     adapter_basic_permission:
+ *     adapter_basic_permissions:
  *       maven-repo:
  *         - read
  *         - write
@@ -33,7 +33,7 @@ import org.junit.jupiter.api.Test;
  *     adapter_all_permission: {}
  * }</pre>
  * {@link PermissionConfig.Yaml} implementation will receive mapping for single permission
- * adapter_basic_permission instance, for example:
+ * adapter_basic_permissions instance, for example:
  * <pre>{@code
  * maven-repo:
  *   - read
@@ -104,6 +104,33 @@ public class PermissionConfigYamlTest {
         MatcherAssert.assertThat(
             new PermissionConfig.Yaml(yaml).keys(),
             Matchers.contains("docker-repo", "docker-local", "docker-vasy")
+        );
+    }
+
+    @Test
+    void returnsSubConfig() throws IOException {
+        final PermissionConfig conf = new PermissionConfig.Yaml(
+            Yaml.createYamlInput(
+                String.join(
+                    "\n",
+                    "\"*\":",
+                    "  \"*\":",
+                    "    - pull"
+                )
+            ).readYamlMapping()
+        );
+        MatcherAssert.assertThat(
+            conf.keys(),
+            Matchers.contains("*")
+        );
+        final PermissionConfig sub = (PermissionConfig) conf.config("*");
+        MatcherAssert.assertThat(
+            sub.keys(),
+            Matchers.contains("*")
+        );
+        MatcherAssert.assertThat(
+            sub.sequence("*"),
+            Matchers.contains("pull")
         );
     }
 }
