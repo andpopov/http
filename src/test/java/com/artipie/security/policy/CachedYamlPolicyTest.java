@@ -342,6 +342,26 @@ class CachedYamlPolicyTest {
         );
     }
 
+    @Test
+    void adminCanDoAnything() {
+        this.asto.save(new Key.From("users/admin.yml"), this.adminConfig());
+        final CachedYamlPolicy policy = new CachedYamlPolicy(
+            this.cache, this.user, this.roles, this.asto
+        );
+        MatcherAssert.assertThat(
+            "Admin can read from maven repo",
+            policy.getPermissions(new AuthUser("admin", "test"))
+                .implies(new AdapterBasicPermission("maven-repo", Action.Standard.READ)),
+            new IsEqual<>(true)
+        );
+        MatcherAssert.assertThat(
+            "Admin can do any operation",
+            policy.getPermissions(new AuthUser("admin", "test"))
+                .implies(new AdapterBasicPermission("*", Action.ALL)),
+            new IsEqual<>(true)
+        );
+    }
+
     private byte[] aliceConfig() {
         return String.join(
             "\n",
@@ -351,7 +371,7 @@ class CachedYamlPolicyTest {
             "roles:",
             "  - java-dev",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    rpm-repo:",
             "      - read",
             "    binary-test-repo:",
@@ -364,7 +384,7 @@ class CachedYamlPolicyTest {
         return String.join(
             "\n",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    python-repo:",
             "      - read",
             "    npm-repo:",
@@ -385,7 +405,7 @@ class CachedYamlPolicyTest {
             "  - java-dev",
             "  - tester",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    repo1:",
             "      - r",
             "      - w",
@@ -397,7 +417,7 @@ class CachedYamlPolicyTest {
         return String.join(
             "\n",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             "    test-repo:",
             "      - download"
         ).getBytes(StandardCharsets.UTF_8);
@@ -407,9 +427,20 @@ class CachedYamlPolicyTest {
         return String.join(
             "\n",
             "permissions:",
-            "  adapter_basic_permission:",
+            "  adapter_basic_permissions:",
             String.format("    %s:", wildcard),
             "      - download"
+        ).getBytes(StandardCharsets.UTF_8);
+    }
+
+    private byte[] adminConfig() {
+        return String.join(
+            "\n",
+            "type: plain",
+            "pass: qwerty",
+            "email: admin@example.com",
+            "permissions:",
+            "  adapter_all_permission: {}"
         ).getBytes(StandardCharsets.UTF_8);
     }
 }

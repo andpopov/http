@@ -23,7 +23,7 @@ class PermissionsTest {
     void createsBasicPermission() {
         MatcherAssert.assertThat(
             new PermissionsLoader().newObject(
-                "adapter_basic_permission",
+                "adapter_basic_permissions",
                 new PermissionConfig.Yaml(
                     Yaml.createYamlMappingBuilder()
                         .add("my-repo", Yaml.createYamlSequenceBuilder().add("read").build())

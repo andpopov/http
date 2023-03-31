@@ -8,7 +8,7 @@ package com.artipie.security.perms;
  * Factory for {@link AdapterBasicPermission}.
  * @since 1.2
  */
-@ArtipiePermissionFactory("adapter_basic_permission")
+@ArtipiePermissionFactory("adapter_basic_permissions")
 public final class AdapterBasicPermissionFactory implements
     PermissionFactory<AdapterBasicPermission.AdapterBasicPermissionCollection> {
 
