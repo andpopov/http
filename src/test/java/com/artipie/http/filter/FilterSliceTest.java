@@ -32,8 +32,7 @@ public class FilterSliceTest {
             NullPointerException.class,
             () -> new FilterSlice(
                 (line, headers, body) -> StandardRs.OK,
-                FiltersTestUtil.yaml("filters:"),
-                new FilterFactoryLoader()
+                FiltersTestUtil.yaml("filters:")
             )
         );
     }
@@ -51,8 +50,7 @@ public class FilterSliceTest {
                     "      filter: **/*",
                     "  exclude:"
                 )
-            ),
-            new FilterFactoryLoader()
+            )
         );
         MatcherAssert.assertThat(
             slice.response(
@@ -76,8 +74,7 @@ public class FilterSliceTest {
                     "  include:",
                     "  exclude:"
                 )
-            ),
-            new FilterFactoryLoader()
+            )
         );
         slice
             .response(

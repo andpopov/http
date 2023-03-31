@@ -21,6 +21,11 @@ import org.reactivestreams.Publisher;
  */
 public class FilterSlice implements Slice {
     /**
+     * Filter factory loader.
+     */
+    private static final FilterFactoryLoader FILTER_LOADER = new FilterFactoryLoader();
+
+    /**
      * Origin slice.
      */
     private final Slice origin;
@@ -34,15 +39,13 @@ public class FilterSlice implements Slice {
      * Ctor.
      * @param origin Origin slice
      * @param yaml Yaml mapping to read filters from
-     * @param loader FilterFactoryLoader
      * @checkstyle HiddenFieldCheck (10 lines)
      */
-    public FilterSlice(final Slice origin, final YamlMapping yaml,
-        final FilterFactoryLoader loader) {
+    public FilterSlice(final Slice origin, final YamlMapping yaml) {
         this(
             origin,
             Optional.of(yaml.yamlMapping("filters"))
-                .map(filters -> new Filters(filters, loader))
+                .map(filters -> new Filters(filters, FilterSlice.FILTER_LOADER))
                 .get()
         );
     }

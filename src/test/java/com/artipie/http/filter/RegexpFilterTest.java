@@ -135,4 +135,31 @@ class RegexpFilterTest {
             IsNot.not(new IsTrue())
         );
     }
+
+    @Test
+    void matchByFullUri() {
+        final Filter filter = new FilterFactoryLoader().newObject(
+            "regexp",
+            Yaml.createYamlMappingBuilder()
+                .add(
+                    "filter",
+                    ".*/com/artipie/.*\\.pom\\?([^&]+)&(user=M[^&]+).*"
+                )
+                .add(
+                    "full_uri",
+                    "true"
+                ).build()
+        );
+        MatcherAssert.assertThat(
+            filter.check(
+                new RequestLineFrom(
+                    FiltersTestUtil.get(
+                        String.format("%s?auth=true&user=Mike#dev", RegexpFilterTest.PATH)
+                    )
+                ),
+                Headers.EMPTY
+            ),
+            new IsTrue()
+        );
+    }
 }

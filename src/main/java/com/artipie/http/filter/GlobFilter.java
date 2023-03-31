@@ -14,6 +14,18 @@ import java.util.Map;
 /**
  * Glob repository filter.
  *
+ * Uses path part of request for matching.
+ *
+ * Yaml format:
+ * <pre>
+ *   type: glob
+ *   filter: expression
+ *
+ *   where
+ *     'type' is mandatory with value 'glob'.
+ *     'filter' is mandatory and value contains globbing expression for request path matching.
+ * </pre>
+ *
  * @since 1.2
  */
 public final class GlobFilter implements Filter {
