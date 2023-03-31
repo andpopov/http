@@ -21,11 +21,6 @@ import org.reactivestreams.Publisher;
  */
 public class FilterSlice implements Slice {
     /**
-     * Filter factory loader.
-     */
-    private static final FilterFactoryLoader FILTER_LOADER = new FilterFactoryLoader();
-
-    /**
      * Origin slice.
      */
     private final Slice origin;
@@ -45,7 +40,7 @@ public class FilterSlice implements Slice {
         this(
             origin,
             Optional.of(yaml.yamlMapping("filters"))
-                .map(filters -> new Filters(filters, FilterSlice.FILTER_LOADER))
+                .map(filters -> new Filters(filters))
                 .get()
         );
     }

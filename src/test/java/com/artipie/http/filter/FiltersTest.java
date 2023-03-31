@@ -84,6 +84,6 @@ class FiltersTest {
      * @return Filters
      */
     private static Filters createFilters(final String yaml) {
-        return new Filters(FiltersTestUtil.yaml(yaml), new FilterFactoryLoader());
+        return new Filters(FiltersTestUtil.yaml(yaml));
     }
 }

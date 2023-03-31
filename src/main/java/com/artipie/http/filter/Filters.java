@@ -19,6 +19,11 @@ import java.util.stream.Collectors;
  */
 public final class Filters {
     /**
+     * Filter factory loader.
+     */
+    private static final FilterFactoryLoader FILTER_LOADER = new FilterFactoryLoader();
+
+    /**
      * Including filters.
      */
     private final List<Filter> includes;
@@ -31,11 +36,10 @@ public final class Filters {
     /**
      * Ctor.
      * @param yaml Yaml mapping to read filters from
-     * @param loader Filter loader's instance of {@link FilterFactoryLoader}
      */
-    public Filters(final YamlMapping yaml, final FilterFactoryLoader loader) {
-        this.includes = Filters.readFilterList(yaml, "include", loader);
-        this.excludes = Filters.readFilterList(yaml, "exclude", loader);
+    public Filters(final YamlMapping yaml) {
+        this.includes = Filters.readFilterList(yaml, "include", Filters.FILTER_LOADER);
+        this.excludes = Filters.readFilterList(yaml, "exclude", Filters.FILTER_LOADER);
     }
 
     /**
