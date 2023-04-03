@@ -7,7 +7,6 @@ package com.artipie.http.filter;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.artipie.http.rq.RequestLineFrom;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
 import java.util.Map;
