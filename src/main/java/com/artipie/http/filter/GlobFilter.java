@@ -9,6 +9,7 @@ import com.artipie.http.rq.RequestLineFrom;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
+import java.nio.file.Paths;
 import java.util.Map;
 
 /**
@@ -48,6 +49,6 @@ public final class GlobFilter implements Filter {
     @Override
     public boolean check(final RequestLineFrom line,
         final Iterable<Map.Entry<String, String>> headers) {
-        return this.matcher.matches(Path.of(line.uri().getPath()));
+        return this.matcher.matches(Paths.get(line.uri().getPath()));
     }
 }
