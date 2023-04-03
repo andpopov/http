@@ -18,17 +18,17 @@ import java.util.Map;
  *
  * Yaml format:
  * <pre>
- *   type: glob
  *   filter: expression
+ *   priority: priority_value
  *
  *   where
- *     'type' is mandatory with value 'glob'.
  *     'filter' is mandatory and value contains globbing expression for request path matching.
+ *     'priority_value' is optional and provides priority value. Default value is zero priority.
  * </pre>
  *
  * @since 1.2
  */
-public final class GlobFilter implements Filter {
+public final class GlobFilter extends Filter {
     /**
      * Path matcher.
      */
@@ -40,6 +40,7 @@ public final class GlobFilter implements Filter {
      * @param yaml Yaml mapping to read filters from
      */
     public GlobFilter(final YamlMapping yaml) {
+        super(yaml);
         this.matcher = FileSystems.getDefault().getPathMatcher(
             String.format("glob:%s", yaml.string("filter"))
         );

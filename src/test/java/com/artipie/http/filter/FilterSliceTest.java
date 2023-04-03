@@ -46,8 +46,8 @@ public class FilterSliceTest {
                     System.lineSeparator(),
                     "filters:",
                     "  include:",
-                    "    - type: glob",
-                    "      filter: **/*",
+                    "    glob:",
+                    "      - filter: **/*",
                     "  exclude:"
                 )
             )

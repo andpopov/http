@@ -44,17 +44,42 @@ class FiltersTest {
             String.join(
                 System.lineSeparator(),
                 "include:",
-                "  - type: glob",
-                "    filter: **/com/acme/**",
-                "  - type: glob",
-                "    filter: **/com/artipie/**",
+                "  glob:",
+                "    - filter: **/com/acme/**",
+                "    - filter: **/com/artipie/**",
                 "exclude:",
-                "  - type: glob",
-                "    filter: **/org/log4j/**"
+                "  glob:",
+                "    - filter: **/org/log4j/**"
             )
         );
         MatcherAssert.assertThat(
             filters.allowed(FiltersTestUtil.get(FiltersTest.PATH), Headers.EMPTY),
+            new IsTrue()
+        );
+    }
+
+    @Test
+    void allowsMixedFilters() {
+        final Filters filters = FiltersTest.createFilters(
+            String.join(
+                System.lineSeparator(),
+                "include:",
+                "  glob:",
+                "    - filter: **/com/acme/**",
+                "    - filter: **/com/artipie/**",
+                "  regexp:",
+                "    - filter: .*/com/github/.*\\.pom",
+                "    - filter: .*/pool/main/.*\\.deb",
+                "exclude:",
+                "  glob:",
+                "    - filter: **/org/log4j/**"
+            )
+        );
+        MatcherAssert.assertThat(
+            filters.allowed(
+                FiltersTestUtil.get("debian/pool/main/c/cron/cron_3.0pl1-137_amd64.deb"),
+                Headers.EMPTY
+            ),
             new IsTrue()
         );
     }
@@ -65,15 +90,41 @@ class FiltersTest {
             String.join(
                 System.lineSeparator(),
                 "include:",
-                "  - type: glob",
-                "    filter: **/*",
+                "  glob:",
+                "    - filter: **/*",
                 "exclude:",
-                "  - type: glob",
-                "    filter: **/com/artipie/**"
+                "  glob:",
+                "    - filter: **/com/artipie/**"
             )
         );
         MatcherAssert.assertThat(
             filters.allowed(FiltersTestUtil.get(FiltersTest.PATH), Headers.EMPTY),
+            IsNot.not(new IsTrue())
+        );
+    }
+
+    @Test
+    void forbidMixedFilters() {
+        final Filters filters = FiltersTest.createFilters(
+            String.join(
+                System.lineSeparator(),
+                "include:",
+                "  glob:",
+                "    - filter: **/org/log4j/**",
+                "exclude:",
+                "  glob:",
+                "    - filter: **/com/acme/**",
+                "    - filter: **/com/artipie/**",
+                "  regexp:",
+                "    - filter: .*/com/github/.*\\.pom",
+                "    - filter: .*/pool/main/.*\\.deb"
+            )
+        );
+        MatcherAssert.assertThat(
+            filters.allowed(
+                FiltersTestUtil.get("debian/pool/main/c/cron/cron_3.0pl1-137_amd64.deb"),
+                Headers.EMPTY
+            ),
             IsNot.not(new IsTrue())
         );
     }

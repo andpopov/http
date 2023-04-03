@@ -7,7 +7,9 @@ package com.artipie.http.filter;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.artipie.http.rq.RequestLineFrom;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,6 +18,12 @@ import java.util.stream.Collectors;
 /**
  * Filters.
  *
+ * Yaml format:
+ * <pre>
+ *   include: yaml-sequence of including filters
+ *   exclude: yaml-sequence of excluding filters
+ * </pre>
+
  * @since 1.2
  */
 public final class Filters {
@@ -39,8 +47,8 @@ public final class Filters {
      * @param yaml Yaml mapping to read filters from
      */
     public Filters(final YamlMapping yaml) {
-        this.includes = Filters.readFilterList(yaml, "include", Filters.FILTER_LOADER);
-        this.excludes = Filters.readFilterList(yaml, "exclude", Filters.FILTER_LOADER);
+        this.includes = Filters.readFilterList(yaml, "include");
+        this.excludes = Filters.readFilterList(yaml, "exclude");
     }
 
     /**
@@ -71,18 +79,24 @@ public final class Filters {
      * Reads yaml definitions of filters.
      * @param yaml Yaml-mapping
      * @param property Property name
-     * @param loader FilterFactoryLoader
-     * @return List of filters
+     * @return List of filters ordered by descending priority
      */
-    private static List<Filter> readFilterList(final YamlMapping yaml, final String property,
-        final FilterFactoryLoader loader) {
-        return Optional.ofNullable(yaml.yamlSequence(property))
+    private static List<Filter> readFilterList(final YamlMapping yaml, final String property) {
+        final List<Filter> list = Optional.ofNullable(yaml.yamlMapping(property))
             .map(
-                sequence -> sequence.values().stream()
-                    .map(YamlNode::asMapping)
-                    .map(node -> loader.newObject(node.string("type"), node))
-                    .collect(Collectors.toList())
+                map ->
+                    map.keys().stream().map(key -> key.asScalar().value())
+                        .map(
+                            type -> map.yamlSequence(type).values().stream()
+                                .map(YamlNode::asMapping)
+                                .map(node -> Filters.FILTER_LOADER.newObject(type, node))
+                                .collect(Collectors.toList())
+                        )
+                        .flatMap(Collection::stream)
+                        .collect(Collectors.toList())
             )
             .orElse(Collections.emptyList());
+        list.sort(Collections.reverseOrder(Comparator.comparingInt(Filter::priority)));
+        return list;
     }
 }
