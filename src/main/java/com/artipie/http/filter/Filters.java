@@ -7,6 +7,7 @@ package com.artipie.http.filter;
 import com.amihaiemil.eoyaml.YamlMapping;
 import com.amihaiemil.eoyaml.YamlNode;
 import com.artipie.http.rq.RequestLineFrom;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -82,6 +83,6 @@ public final class Filters {
                     .map(node -> loader.newObject(node.string("type"), node))
                     .collect(Collectors.toList())
             )
-            .orElse(List.of());
+            .orElse(Collections.emptyList());
     }
 }
